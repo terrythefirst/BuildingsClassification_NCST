@@ -87,6 +87,7 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
     private ImageView ivSwitchCamera;//切换前后摄像头
     private ImageView ivLightOn;//开关闪光灯
     private ImageView ivClose;//关闭该Activity
+    private ImageView deleteTemp;
 
     private Handler handler;
     private HandlerThread handlerThread;
@@ -188,6 +189,7 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
         ivSwitchCamera = findViewById(R.id.iv_switchCamera);
         ivLightOn = findViewById(R.id.iv_lightOn);
         ivClose = findViewById(R.id.iv_close);
+        deleteTemp = findViewById(R.id.iv_delete_temp);
         // 得到载入对话框的container的引用
         loadingDialogHandler.mLoadingDialogContainer = findViewById(R.id.loading_layout);
 
@@ -195,6 +197,7 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
         ivLightOn.setOnClickListener(clickListener);
         ivClose.setOnClickListener(clickListener);
         ivTakePhoto.setOnClickListener(clickListener);
+        deleteTemp.setOnClickListener(clickListener);
 
         mTextureView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -223,6 +226,8 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
                 capture();
             } else if(i == R.id.return_btn){
                 return_to_camera();
+            } else if(i == R.id.iv_delete_temp){
+                Camera2Util.deleteTempFiles();
             }
         }
     };
@@ -362,7 +367,6 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
                                         .sendEmptyMessage(LoadingDialogHandler.SHOW_LOADING_DIALOG);
                                 //这里拍照保存完成，可以进行相关的操作，例如再次压缩等(由于封装，这里我先跳转掉完成页面)
 
-
                                 if(croppedBitmap==null){
                                     LOGGER.e("Cropped Bitmap  null!!");
                                     return;
@@ -374,12 +378,7 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
                                 LOGGER.i("Detect: %s", TFConfig.results);
                                 Toast.makeText(Camera2RecordActivity.this,"Top Guesss:"+TFConfig.results.get(0)+"\n"+TFConfig.results.get(0).getId(),Toast.LENGTH_SHORT);
 
-                                try{
-                                    MapBitmapsConstant.load_bitmaps(Camera2RecordActivity.this);
-                                }catch (Exception e){
-                                    Toast.makeText(Camera2RecordActivity.this, "地图载入失败！", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
+
                                 //隐藏加载对话框
                                 // Hides the Loading Dialog
                                 loadingDialogHandler
@@ -795,6 +794,13 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
             @Override
             public void handleMessage(Message msg) {
                 if (msg.what == COMPLETED) {
+                    try{
+                        MapBitmapsConstant.load_bitmaps(Camera2RecordActivity.this);
+                    }catch (Exception e){
+                        Toast.makeText(Camera2RecordActivity.this, "地图载入失败！", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     setContentView(R.layout.map_view_layout);
                     MapView mapView = Camera2RecordActivity.this.findViewById(R.id.map_view);
                     String ss = TFConfig.results.get(0).getTitle().toUpperCase();

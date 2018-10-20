@@ -34,6 +34,14 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/ic_capture_switch" />
+
+        <ImageView
+            android:id="@+id/iv_delete_temp"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/trash2" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -59,6 +67,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/selector_capture_light" />
+
     </RelativeLayout>
 
     <RelativeLayout

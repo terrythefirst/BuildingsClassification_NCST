@@ -121,12 +121,29 @@ public class Camera2Util {
      * 使用Camera2录制和所拍的照片都会在这里
      */
     public static String getCamera2Path() {
-        String picturePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/CameraV2/";
+        String picturePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/BuildingClassificationTemp/";
         File file = new File(picturePath);
         if (!file.exists()) {
             file.mkdirs();
         }
         return picturePath;
+    }
+
+    public static boolean deleteTempFiles(){
+        boolean flag = true;
+        String picturePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/BuildingClassificationTemp/";
+        File file = new File(picturePath);
+        if(file.exists()){
+            String[] tempList = file.list();
+            File temp = null;
+            for (int i = 0; i < tempList.length; i++) {
+                temp = new File(picturePath + File.separator + tempList[i]);
+                if (temp.isFile()) {
+                    flag = temp.delete();
+                }
+            }
+            return flag;
+        }else return true;
     }
 
     /**
